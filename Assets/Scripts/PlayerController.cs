@@ -3,10 +3,16 @@
 public class PlayerController : MonoBehaviour
 {
     [SerializeField]
+    private SpriteRenderer m_SpriteRenderer;
+
+    [SerializeField]
     private Animator m_Animator;
 
     [SerializeField]
     private Rigidbody2D m_Rigidbody2D;
+
+    [SerializeField]
+    private Transform m_Feet;
 
     [SerializeField]
     private float m_MovementSpeed = 3f;
@@ -22,6 +28,8 @@ public class PlayerController : MonoBehaviour
 
     private bool m_Jump = false;
 
+    private bool m_Crouch = false;
+
     private float m_Movement = 0f;
 
     private bool m_IsGrounded = false;
@@ -31,6 +39,12 @@ public class PlayerController : MonoBehaviour
     private int m_SpeedAnimatorId = Animator.StringToHash("Speed");
 
     private int m_GroundAnimatorId = Animator.StringToHash("Ground");
+
+    private int m_VerticalSpeedAnimatorId = Animator.StringToHash("vSpeed");
+
+    private int m_CrouchAnimatorId = Animator.StringToHash("Crouch");
+
+    private bool m_FacingRight = true;
 
     void Update()
     {
@@ -42,7 +56,9 @@ public class PlayerController : MonoBehaviour
     {
         m_IsGrounded = false;
 
-        int hitsCount = Physics2D.RaycastNonAlloc(transform.position, Vector2.down, m_RaycastResults, m_GroundCheckDistance, m_GroundCheckLayer);
+        int hitsCount = Physics2D.RaycastNonAlloc(m_Feet.position, Vector2.down, m_RaycastResults, m_GroundCheckDistance, m_GroundCheckLayer);
+
+        Debug.DrawLine(m_Feet.position, m_Feet.position + (Vector3.down * m_GroundCheckDistance), Color.red);
 
         for (int i = 0; i < hitsCount; i++)
         {
@@ -64,6 +80,9 @@ public class PlayerController : MonoBehaviour
         {
             m_Jump = Input.GetButtonDown("Jump");
         }
+
+        float vertical = Input.GetAxis("Vertical");
+        m_Crouch = vertical < 0f;
     }
 
     private void UpdateMovement()
@@ -77,6 +96,15 @@ public class PlayerController : MonoBehaviour
             m_IsGrounded = false;
             m_Jump = false;
         }
+
+        if (m_Movement > 0f && !m_FacingRight)
+        {
+            FlipSprite();
+        }
+        else if (m_Movement < 0f && m_FacingRight)
+        {
+            FlipSprite();
+        }
     }
 
     private void UpdateAnimator()
@@ -85,5 +113,13 @@ public class PlayerController : MonoBehaviour
 
         m_Animator.SetFloat(m_SpeedAnimatorId, absMovement);
         m_Animator.SetBool(m_GroundAnimatorId, m_IsGrounded);
+        m_Animator.SetFloat(m_VerticalSpeedAnimatorId, m_Rigidbody2D.velocity.y);
+        m_Animator.SetBool(m_CrouchAnimatorId, m_Crouch);
+    }
+
+    private void FlipSprite()
+    {
+        m_FacingRight = !m_FacingRight;
+        m_SpriteRenderer.flipX = !m_FacingRight;
     }
 }

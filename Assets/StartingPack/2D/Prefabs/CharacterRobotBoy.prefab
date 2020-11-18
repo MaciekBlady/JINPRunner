@@ -212,14 +212,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46b1bfbc6b0372d4eb27d57a20a105ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SpriteRenderer: {fileID: 21200000}
   m_Animator: {fileID: 9500000}
   m_Rigidbody2D: {fileID: 5000000}
+  m_Feet: {fileID: 400000}
   m_MovementSpeed: 3
   m_JumpForce: 500
   m_GroundCheckLayer:
     serializedVersion: 2
     m_Bits: 256
-  m_GroundCheckDistance: 1.5
+  m_GroundCheckDistance: 0.1
 --- !u!1 &100004
 GameObject:
   m_ObjectHideFlags: 0
