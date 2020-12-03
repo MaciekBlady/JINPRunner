@@ -217,7 +217,7 @@ MonoBehaviour:
   m_Rigidbody2D: {fileID: 5000000}
   m_Feet: {fileID: 400000}
   m_MovementSpeed: 3
-  m_JumpForce: 500
+  m_JumpForce: 1000
   m_GroundCheckLayer:
     serializedVersion: 2
     m_Bits: 256
