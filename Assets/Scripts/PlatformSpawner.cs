@@ -46,8 +46,8 @@ public class PlatformSpawner : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(m_SpawnInterval);
             SpawnPlatfrom();
+            yield return new WaitForSeconds(m_SpawnInterval);
         }
     }
 
