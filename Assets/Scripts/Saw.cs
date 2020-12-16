@@ -10,7 +10,7 @@ public class Saw : MonoBehaviour
 
     private void Update()
     {
-        transform.position += m_Speed;
+        transform.position += m_Speed * Time.deltaTime;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -21,10 +21,5 @@ public class Saw : MonoBehaviour
             player.Kill();
             player.Rigidbody.AddForce(Vector3.up * m_ForceModifier);
         }
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        
     }
 }

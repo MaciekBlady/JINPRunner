@@ -11,7 +11,6 @@ public abstract class ASingleton<T> : MonoBehaviour where T : MonoBehaviour
             if (s_Instance == null)
             {
                 s_Instance = FindObjectOfType<T>();
-                GameObject.DontDestroyOnLoad(s_Instance);
             }
 
             return s_Instance;
@@ -27,6 +26,9 @@ public abstract class ASingleton<T> : MonoBehaviour where T : MonoBehaviour
         else
         {
             s_Instance = this as T;
+            Initalize();
         }
     }
+
+    protected abstract void Initalize();
 }

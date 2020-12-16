@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -20,7 +17,7 @@ public class SceneLoader
 
         public Scene LoadedScene;
 
-        public LoadSceneTask(string sceneName, Action<Scene> OnSceneLoadedCallback, bool setSceneAsActive = true)
+        public LoadSceneTask(string sceneName, bool setSceneAsActive, Action<Scene> OnSceneLoadedCallback)
         {
             m_SceneName = sceneName;
             m_Callback = OnSceneLoadedCallback;
@@ -42,19 +39,62 @@ public class SceneLoader
         }
     }
 
-    public void LoadScene(string sceneName, Action<Scene> OnSceneLoadedCallback, bool setSceneAsActive = true)
-    {
-        SceneManager.sceneLoaded += SceneManager_sceneLoaded;
-        AsyncOperation loadSceneOperation =  SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+    private Dictionary<string, Scene> m_LoadedScenes = new Dictionary<string, Scene>();
 
-        
+    private Dictionary<string, LoadSceneTask> m_LoadingTasks = new Dictionary<string, LoadSceneTask>();
+
+    public SceneLoader()
+    {
+        RegisterLoadedScenes();
     }
 
-    private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode arg1)
+    private void RegisterLoadedScenes()
     {
-        throw new NotImplementedException();
-        SceneManager.SetActiveScene(scene);
+        m_LoadedScenes.Clear();
+        int loadedScenesCount = SceneManager.sceneCount;
 
+        for (int i = 0; i < loadedScenesCount; i++)
+        {
+            Scene scene = SceneManager.GetSceneAt(i);
+            if (!m_LoadedScenes.ContainsKey(scene.name))
+            {
+                m_LoadedScenes.Add(scene.name, scene);
+            }
+        }
+    }
+
+    public bool IsSceneLoaded(string sceneName) => m_LoadedScenes.ContainsKey(sceneName);
+
+    public void LoadScene(string sceneName, Action<Scene> OnSceneLoadedCallback, bool setSceneAsActive = true)
+    {
+        if (m_LoadingTasks.ContainsKey(sceneName))
+        {
+            Debug.LogErrorFormat("Scene is already loading! {0}", sceneName);
+            return;
+        }
+
+        Scene scene;
+        if (m_LoadedScenes.TryGetValue(sceneName, out scene))
+        {
+            if (setSceneAsActive)
+            {
+                SceneManager.SetActiveScene(scene);
+            }
+
+            OnSceneLoadedCallback?.Invoke(scene);
+        }
+        else
+        {
+            LoadSceneTask task = new LoadSceneTask(sceneName, setSceneAsActive, (loadedScene) =>
+            {
+                m_LoadedScenes.Add(loadedScene.name, loadedScene);
+                OnSceneLoadedCallback?.Invoke(loadedScene);
+
+                m_LoadingTasks.Remove(loadedScene.name);
+            });
+
+            m_LoadingTasks.Add(sceneName, task);
+        }
     }
 }
 
