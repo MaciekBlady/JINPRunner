@@ -43,6 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30055036da0f0384f8209c99eb7e8b98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Velocity: {x: 0.06, y: 0, z: 0}
+  m_Velocity: {x: 7, y: 0, z: 0}
   m_SpawnInterval: 2
   m_PlatfromSet: {fileID: 11400000, guid: 6df4fd3f02326b943a7a3b13a7ac4bdc, type: 2}

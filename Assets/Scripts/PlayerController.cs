@@ -29,6 +29,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float m_GroundCheckDistance;
 
+    [SerializeField]
+    private float m_DeathYThreshold = -10;
+
     private bool m_Jump = false;
 
     private bool m_Crouch = false;
@@ -57,6 +60,8 @@ public class PlayerController : MonoBehaviour
     {
         GetInput();
         UpdateAnimator();
+
+        HeightDeathCheck();
     }
 
     private void FixedUpdate()
@@ -128,6 +133,14 @@ public class PlayerController : MonoBehaviour
     {
         m_FacingRight = !m_FacingRight;
         m_SpriteRenderer.flipX = !m_FacingRight;
+    }
+
+    private void HeightDeathCheck()
+    {
+        if (transform.position.y <= m_DeathYThreshold)
+        {
+            Kill();
+        }
     }
 
     public void Kill()

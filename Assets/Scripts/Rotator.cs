@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Rotator : MonoBehaviour
 {
@@ -13,9 +11,8 @@ public class Rotator : MonoBehaviour
         m_Transform = GetComponent<Transform>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        m_Transform.Rotate(RotationDelta);
+        m_Transform.Rotate(RotationDelta * Time.deltaTime);
     }
 }
