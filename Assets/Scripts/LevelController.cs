@@ -37,6 +37,8 @@ public class LevelController : MonoBehaviour
     {
         Unsubscribe();
         StartCoroutine(RestartLevelCoroutine());
+        GameController.Instance.Reset();
+        GameController.Instance.MainInterfacView.ShowKilledMessage();
     }
     
     private void Unsubscribe()

@@ -3,6 +3,8 @@ using UnityEngine.SceneManagement;
 
 public class GameController : ASingleton<GameController>
 {
+    public UIMainInterfacView MainInterfacView;
+
     private const string GAMEPLAY_SCENE_NAME = "Gameplay";
 
     private SceneLoader m_SceneLoader;
@@ -10,6 +12,11 @@ public class GameController : ASingleton<GameController>
     private ulong m_Points = 0;
 
     private bool m_Paused = false;
+
+    public void Reset()
+    {
+        m_Points = 0;
+    }
 
     public void HandleCoinPickedUp(Coin coin)
     {
@@ -19,11 +26,13 @@ public class GameController : ASingleton<GameController>
         }
 
         m_Points += coin.Points;
-        Debug.LogFormat("Total points: {0}", m_Points);
+        //MainInterfacView.Configure(m_Points);
     }
 
     protected override void Initalize()
     {
+        MainInterfacView.Initialize(Pause);
+
         m_SceneLoader = new SceneLoader();
         m_SceneLoader.LoadScene(GAMEPLAY_SCENE_NAME, HandleSceneLoaded);
     }
@@ -37,8 +46,15 @@ public class GameController : ASingleton<GameController>
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            m_Paused = !m_Paused;
-            Time.timeScale = m_Paused ? 0f : 1f;
+            Pause();
         }
+
+        MainInterfacView.Configure(m_Points, Time.time);
+    }
+
+    private void Pause()
+    {
+        m_Paused = !m_Paused;
+        Time.timeScale = m_Paused ? 0f : 1f;
     }
 }
